@@ -19,7 +19,6 @@ namespace ParsonApi.Controllers
 
         [HttpGet]
         [Route("api/[controller]s")]
-        //public async Task<IEnumerable<Parson>> GetParson(){}
         public async Task<ActionResult<IEnumerable<Parson>>> GetParsons()
         {
             var parsons = await _crudRepository.GetEntitiesAsync();
@@ -27,7 +26,7 @@ namespace ParsonApi.Controllers
             {
                 return NotFound(parsons);
             }
-            return Ok(parsons);
+            return Ok(Json(parsons));
         }
 
         [HttpGet]
@@ -48,17 +47,47 @@ namespace ParsonApi.Controllers
 
         [HttpPost]
         [Route("api/[controller]")]
-        public async Task<ActionResult<bool>> AddParson(Parson parson)
+        public async Task<ActionResult<Parson>> AddParsonAsync(Parson parson)
         {
             if (!ModelState.IsValid)
             {
-                return Json(ModelState);
+                return BadRequest(Json(ModelState));
             }
             if (await _crudRepository.AddEntityAsync(parson))
             {
                 return Created("~/api/Parson/", parson);
             }
             return Json(_crudRepository.Message);
+        }
+
+        [HttpPut]
+        [Route("api/[controller]")]
+        public async Task<ActionResult<Parson>> UpdateParsonAsync(Parson parson)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(Json(ModelState));
+            }
+            if (await _crudRepository.UpdateEntityAsync(parson))
+            {
+                return Ok(parson);
+            }
+            return Json(_crudRepository.Message);
+        }
+
+        [HttpDelete]
+        [Route("api/[controller]/{id}")]
+        public async Task<ActionResult<bool>> DeleteParsonAsync(int id)
+        {
+            if(id <= 0)
+            {
+                return BadRequest();
+            }
+            if(await _crudRepository.DeleteEntityAsync(id))
+            {
+                return Ok(true);
+            }
+            return NotFound(_crudRepository.Message);
         }
     }
 }
