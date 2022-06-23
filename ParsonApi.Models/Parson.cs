@@ -5,7 +5,6 @@ namespace ParsonApi.Models
     public class Parson
     {
         [Key]
-        [Required(ErrorMessage = "Please Enter Id")]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Please Enter Name")]
